@@ -107,12 +107,12 @@ void solve()
         cin >> entry;
         b.eb(entry);
     }
-    sort(a.begin(), a.end(), greater<int>());
-    sort(b.begin(), b.end(), greater<int>());
+    sort(a.begin(), a.end());
+    sort(b.begin(), b.end());
     int i = n - 1, j = m - 1;
     while (i >= 0 && j >= 0)
     {
-        int diff = a[i] - b[j];
+        ll diff = a[i] - b[j];
         if (abs(diff) <= k)
         {
             i--;
@@ -122,11 +122,29 @@ void solve()
         else
         {
             if (diff < 0)
-                i--;
-            else
                 j--;
+            else
+                i--;
         }
     }
+    // int i = 0, j = 0;
+    // while (i < n && j < m)
+    // {
+    //     ll diff = a[i] - b[j];
+    //     if (abs(diff) <= k)
+    //     {
+    //         i++;
+    //         j++;
+    //         cnt++;
+    //     }
+    //     else
+    //     {
+    //         if (diff < 0)
+    //             i++;
+    //         else
+    //             j++;
+    //     }
+    // }
     cout << cnt << "\n";
 }
 
