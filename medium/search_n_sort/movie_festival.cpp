@@ -1,5 +1,3 @@
-#pragma GCC optimize("O3,unroll-loops")
-
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -12,7 +10,6 @@ typedef unsigned int ui;
 // Vectors
 #define pb push_back
 #define eb emplace_back
-#define all(v) v.begin(), v.end()
 typedef vector<int> vi;
 typedef vector<vi> vvi;
 typedef vector<ll> vl;
@@ -31,15 +28,9 @@ typedef pair<ll, ll> pll;
 
 const int MOD = 1e9 + 7;
 
-// safe_map bfsOfGraph dfsIterOfGraph dfsRecurOfGraph flood_fill dijkstra kruskal
-
 bool comp(pair<int, int> p1, pair<int, int> p2)
-{ // just a sample
-    if (p1.second > p2.second)
-        return true;
+{
     if (p1.second < p2.second)
-        return false;
-    if (p1.second == p2.second && p1.first > p2.first)
         return true;
     return false;
 }
@@ -96,56 +87,33 @@ ll floor_sqrt(ll x)
     return ans;
 }
 
-class dsu
-{
-public:
-    vl parent, size;
-    dsu(ll n)
-    { // makes new set
-        size.resize(n + 1, 1);
-        parent.resize(n + 1);
-        for (ll i = 0; i <= n; i++)
-            parent[i] = i;
-    }
-    ll find_set(ll v)
-    {
-        if (v == parent[v])
-            return v;
-        // path compression
-        return parent[v] = find_set(parent[v]);
-    }
-    void union_sets(ll a, ll b)
-    {
-        // union by size
-        a = find_set(a);
-        b = find_set(b);
-        if (a != b)
-        {
-            if (size[a] < size[b])
-                swap(a, b);
-            parent[b] = a;
-            size[a] += size[b];
-        }
-    }
-};
-
 void solve()
 {
-    ll n, entry;
-    string s;
-    vl v;
+    ll n, a, b;
+    vector<pll> v;
     cin >> n;
     for (ll i = 0; i < n; i++)
     {
-        cin >> entry;
-        v.eb(entry);
+        cin >> a >> b;
+        pll p = mp(a, b);
+        v.eb(p);
     }
+    sort(v.begin(), v.end(), comp);
+    ll cnt = 1;
+    ll last = 0;
+    for (ll i = 1; i < n; i++)
+    {
+        if (v[i].first >= v[last].second)
+        {
+            cnt++;
+            last = i;
+        }
+    }
+    cout << cnt << "\n";
 }
 
 int main()
 {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
     solve();
     return 0;
 }

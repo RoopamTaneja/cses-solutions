@@ -31,7 +31,7 @@ typedef pair<ll, ll> pll;
 
 const int MOD = 1e9 + 7;
 
-// safe_map bfsOfGraph dfsIterOfGraph dfsRecurOfGraph flood_fill dijkstra kruskal
+// safe_map bfsOfGraph dfsIterOfGraph dfsRecurOfGraph
 
 bool comp(pair<int, int> p1, pair<int, int> p2)
 { // just a sample
@@ -96,50 +96,65 @@ ll floor_sqrt(ll x)
     return ans;
 }
 
-class dsu
+void bfs(ll n, vl adj[])
 {
-public:
-    vl parent, size;
-    dsu(ll n)
-    { // makes new set
-        size.resize(n + 1, 1);
-        parent.resize(n + 1);
-        for (ll i = 0; i <= n; i++)
-            parent[i] = i;
-    }
-    ll find_set(ll v)
+    vl dist(n + 1, INT_MAX);
+    vl parent(n + 1, -1);
+    vl result;
+    dist[1] = 0;
+    queue<ll> q;
+    q.push(1);
+    while (!q.empty())
     {
-        if (v == parent[v])
-            return v;
-        // path compression
-        return parent[v] = find_set(parent[v]);
-    }
-    void union_sets(ll a, ll b)
-    {
-        // union by size
-        a = find_set(a);
-        b = find_set(b);
-        if (a != b)
+        ll node = q.front();
+        q.pop();
+        for (auto it : adj[node])
         {
-            if (size[a] < size[b])
-                swap(a, b);
-            parent[b] = a;
-            size[a] += size[b];
+            if (dist[it] == INT_MAX)
+            {
+                q.push(it);
+                dist[it] = dist[node] + 1;
+                parent[it] = node;
+            }
+            if (it == n)
+                break;
         }
     }
-};
+    if (dist[n] == INT_MAX)
+        cout << "IMPOSSIBLE\n";
+    else
+    {
+        vl path;
+        while (n != 1)
+        {
+            path.eb(n);
+            n = parent[n];
+        }
+        path.eb(1);
+        reverse(path.begin(), path.end());
+        cout << path.size() << "\n";
+        for (ll i = 0; i < path.size(); i++)
+            cout << path[i] << " ";
+
+        cout << "\n";
+    }
+}
+// T. C. : BFS : O(V+E)
 
 void solve()
 {
-    ll n, entry;
-    string s;
-    vl v;
-    cin >> n;
-    for (ll i = 0; i < n; i++)
+    ll n, m;
+    cin >> n >> m;
+
+    vl adj[n + 1];
+    for (int i = 0; i < m; i++)
     {
-        cin >> entry;
-        v.eb(entry);
+        int u, v;
+        cin >> u >> v;
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
+    bfs(n, adj);
 }
 
 int main()

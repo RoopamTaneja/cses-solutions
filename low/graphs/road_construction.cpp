@@ -114,7 +114,7 @@ public:
         // path compression
         return parent[v] = find_set(parent[v]);
     }
-    void union_sets(ll a, ll b)
+    ll union_sets(ll a, ll b)
     {
         // union by size
         a = find_set(a);
@@ -122,23 +122,37 @@ public:
         if (a != b)
         {
             if (size[a] < size[b])
+            {
                 swap(a, b);
+            }
             parent[b] = a;
             size[a] += size[b];
+            return a;
         }
+        return -1;
     }
 };
-
 void solve()
 {
-    ll n, entry;
-    string s;
-    vl v;
-    cin >> n;
-    for (ll i = 0; i < n; i++)
+    ll n, a, b, m;
+    vector<pll> v;
+    cin >> n >> m;
+    for (ll i = 0; i < m; i++)
     {
-        cin >> entry;
-        v.eb(entry);
+        cin >> a >> b;
+        v.eb(mp(a, b));
+    }
+    dsu ds(n);
+    ll cnt = n, max_size = 1;
+    for (auto it : v)
+    {
+        ll val = ds.union_sets(it.first, it.second);
+        if (val != -1)
+        {
+            cnt--;
+            max_size = max(max_size, ds.size[val]);
+        }
+        cout << cnt << " " << max_size << "\n";
     }
 }
 
