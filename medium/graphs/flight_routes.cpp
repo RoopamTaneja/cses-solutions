@@ -16,16 +16,16 @@ void dijkstra(ll n, ll k, vector<pll> adj[])
 {
     // src is fixed as 1
     vector<priority_queue<ll>> dists(n + 1);
-    multiset<pll> q; // to not skip repeating distances
-    q.insert({0, 1});
+    priority_queue<pll, vector<pll>, greater<pll>> q; // to not skip repeating distances
+    q.push({0, 1});
     dists[1].push(0);
     while (!q.empty())
     {
-        ll v = q.begin()->second;
-        ll dist_v = q.begin()->first;
-        q.erase(q.begin());
+        ll v = q.top().second;
+        ll dist_v = q.top().first;
+        q.pop();
 
-        if (dist_v > dists[v].top())
+        if (dist_v > dists[v].top()) // redundant distances in queue
             continue;
 
         for (auto &edge : adj[v])
@@ -36,13 +36,13 @@ void dijkstra(ll n, ll k, vector<pll> adj[])
             if (dists[adj_v].size() < k)
             {
                 dists[adj_v].push(val);
-                q.insert({val, adj_v});
+                q.push({val, adj_v});
             }
             else if (val < dists[adj_v].top())
             {
                 dists[adj_v].pop();
                 dists[adj_v].push(val);
-                q.insert({val, adj_v});
+                q.push({val, adj_v});
             }
         }
     }
