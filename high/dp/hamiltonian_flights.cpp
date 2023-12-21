@@ -31,7 +31,7 @@ ll hamiltonianRoutes(ll n, vector<ll> adj[])
         // also only consider subsets with the last city if it's the full subset
         // ie don't end at last city before reaching all vertices since it's
         // supposed to be our final destination
-        if ((s & (1 << (n - 1))) & (s != ((1 << n) - 1))) // necessary to avoid tle due to redundant computations
+        if ((s & (1 << (n - 1))) && (s != ((1 << n) - 1))) // necessary to avoid tle due to redundant computations
             continue;
         for (ll i = 1; i <= n; i++)
         {
