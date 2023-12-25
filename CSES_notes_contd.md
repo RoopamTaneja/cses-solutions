@@ -241,3 +241,140 @@ dp[i] = max(dp[i-1], reward[i] + dp[j])
 Clearly, you can easily get j as lower bound of s[i] over sorted ending times.
 
 T.C : O(n*lg n)
+
+## Maths - Games :
+
+### Nim and Grundy
+
+**Read CPH chapter on Game Theory and this link :** 
+
+https://letuskode.blogspot.com/2014/08/grundy-numbers.html
+
+### Maths - Stick Game
+
+Reducing it to a single pile using Grundy's numbers, we get this code :
+
+```cpp
+ll mex(set<ll> a)
+{
+    ll result = 0;
+    while (a.count(result))
+        ++result;
+    return result;
+}
+
+    vl dp(n + 1);
+    dp[0] = 0;
+    dp[1] = 1;
+    for (ll i = 2; i <= n; i++)
+    {
+        set<ll> a;
+        for (auto &x : v)
+        {
+            if (i >= x)
+                a.insert(dp[i - x]);
+        }
+        dp[i] = mex(a);
+    }
+    for (ll i = 1; i <= n; i++)
+    {
+        if (dp[i] > 0)
+            cout << "W";
+        else
+            cout << "L";
+    }
+```
+
+But realise that you are only checking if the Grundy no is zero or not. For that you don't actually need to find mex.
+
+MEX will be zero (L) only if you never encounter a zero or (L) state. Otherwise if you encounter even a single zero (L) state, your MEX must be >0 and hence a W.
+
+So you can do that in this:
+```cpp
+    vector<bool> dp(n + 1, 0);
+    dp[0] = 0;
+    dp[1] = 1;
+    for (ll i = 2; i <= n; i++)
+    {
+        for (auto &x : v)
+        {
+            if (i >= x)
+            {
+                if (!dp[i - x])
+                {
+                    dp[i] = 1;
+                    break;
+                }
+            }
+        }
+    }
+    for (ll i = 1; i <= n; i++)
+    {
+        if (dp[i])
+            cout << "W";
+        else
+            cout << "L";
+    }
+```
+
+### Maths - Nim Game I
+
+Classic Nim Game : Nim sum == 0, second wins else first.
+
+### Maths - Nim Game II
+
+Like described in the blog, we take nim sum of grundy numbers which are v[i]%4. If it's zero then second else first.
+
+### Maths - Stair Game
+
+We consider elements at even position and proceed as Nim.
+
+Some intuition - to empty a pile at position k, we will have to empty it all the way to position 1, which means there are (k-1) copies of that pile which we have to empty. So if k is odd, xor of k even number of times is 0, so the odd positions don't create an effect, and hence we consider the even positions only. 
+
+### Maths - Grundy's Game
+
+Classic Grundy's game. TC : O(n^2 + t)
+
+To pass it under 1 sec, we use the fact that : for larger values of n (n>=2000), its Sprague-Grundy value is never 0.
+
+So we have to compute the nos till 2000 and beyond them we can be assured that first wins.
+So TC : O(t + 4e6)
+
+Code:
+
+```cpp
+ll mex(set<ll> a)
+{
+    ll result = 0;
+    while (a.count(result))
+        ++result;
+    return result;
+}
+
+void solve()
+{
+    vl dp(2001);
+    dp[1] = 0;
+    dp[2] = 0;
+    for (ll i = 3; i <= 2000; i++)
+    {
+        set<ll> a;
+        for (ll j = 1; j <= i / 2; j++)
+        {
+            if (j != i - j)
+                a.insert(dp[j] ^ dp[i - j]);
+        }
+        dp[i] = mex(a);
+    }
+    ll n, t;
+    cin >> t;
+    while (t--)
+    {
+        cin >> n;
+        if (n > 2000 || dp[n] > 0)
+            cout << "first\n";
+        else
+            cout << "second\n";
+    }
+}
+```

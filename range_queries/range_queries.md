@@ -17,8 +17,7 @@ Best - Sparse Table
 - Intuition: 
 
 Any non-negative number can be uniquely represented as a sum of decreasing powers of two. This is just a variant of the binary representation of a number. E.g.  
-$13 = (1101)_2 = 8 + 4 + 1$ . For a number  
-$x$  there can be at most  
+$13 = (1101)_2 = 8 + 4 + 1$ . For a number $x$ there can be at most  
 $\lceil \log_2 x \rceil$  summands.
 
 By the same reasoning any interval can be uniquely represented as a union of intervals with lengths that are decreasing powers of two. E.g.  
@@ -77,6 +76,33 @@ $O(1)$ .
 
 # Dynamic Range Queries
 
+# BIT or Fenwick Tree
+
+- Binary-Indexed Tree (BIT) or Fenwick Tree is like a dynamic variant of prefix sum array.
+- Supports : Point update and Range **sum** query in O(lg n)
+- Needs only O(n) memory
+- It is usually represented as an array. Better to keep arrays as one-indexed.
+- Let $p(k)$ denote the largest power of two that divides $k$. We store a binary indexed tree as an array `tree` such that
+`tree[k] = sum_q(k-p(k)+1,k)` i.e., each position $k$ contains the sum of values in a range of the original array whose length is $p(k)$ and that ends at position $k$. For example, since $p(6) = 2$, `tree[6]` contains the value of $sum_q(5,6)$.
+
+- At a closer look, we can see that any two intervals are either disjoint, or one of them is completely contained by the other. This means we can interpret the set of intervals as a rooted tree (actually a forest), where the father of an interval is the shortest interval that contains it.
+
+- Using a BIT, any value of $sum_q(1,k)$ can be calculated in $O(logn)$ time, because a range $[1,k]$ can always be divided into $O(logn)$ ranges whose sums are stored in the tree. 
+E.g. $sum_q(1,7)$ = $sum_q(1,4)$ + $sum_q(5,6)$ + $sum_q(7,7)$
+
+- To calculate the value of $sum_q(a, b)$ where $a \neq 1$, we can use $sum_q(a, b)$ = $sum_q(1, b)$ - $sum_q(1, a-1)$ which are both $O(logn)$.
+
+- Since each array element belongs to $O(logn)$ ranges in the binary indexed tree, it suffices to update $O(logn)$ values in the tree.
+
+- The operations of a binary indexed tree can be efficiently implemented using bit operations. Note that the interval length p(k) is just LSB of k, which is given by the formula $p(k) = k \& -k$ because if $x = a100..00$ then $-x = (!a)100..00$.
+
+- The difference between an interval i and its father is equal to the interval's length, which we already know how to compute really fast.
+
+- So for point updates, we update the interval , its father and father's father and so on. The father is atleast twice as large -> O(lg n)
+
+- For sum (1, k), we take current interval sum and use knowledge of interval length to jump to previous intervals accumulating their sums until we reach beginning of array.
+  
+- The interval to the left of any interval is at least double in size -> O(lg n)
 # Segment Tree
 
 - A 
@@ -124,3 +150,49 @@ $1 + 2 + 4 + \dots + 2^{\lceil\log_2 n\rceil} \lt 2^{\lceil\log_2 n\rceil + 1} \
 - Define diff array : diff[i] = v[i] - v[i-1] for i>0 and diff[0] = diff[0] and build segtree using it
 - Range update is same as : 2 (or 1) point updates : increase [a, b] by u is same as increasing diff[a] by u and decreasing diff[b+1] by u (iff b+1 < n) (0-based)
 - Point Query is same as range query for [0, k] (0-based) since : v[i] = prefix sum of diff array till index k.
+
+## Segment Tree Applications 
+
+MUST Read these two:
+1. https://codeforces.com/edu/course/2/lesson/4/2
+2. https://usaco.guide/plat/segtree-ext?lang=cpp
+
+### Hotel Queries 
+
+First index >=x, available on both links
+
+### Prefix Sum Queries
+
+Focus on value and combine function:
+1. Value in each node: sum of the elements in the range and the maximum prefix sum in the range
+
+2. Combine fn:  $\texttt{sum}$ = $\texttt{left}.\texttt{sum} + \texttt{right}.\texttt{sum}$.
+   
+   The maximum prefix has to end at either the left segment ($\texttt{left}.\texttt{pref}$), or at the right segment ($\texttt{left}.\texttt{sum} + \texttt{right}.\texttt{pref}$), so $\texttt{pref}$ would equal $\max(\texttt{left}.\texttt{pref}, \texttt{left}.\texttt{sum} + \texttt{right}.\texttt{pref})$.
+
+### Pizzeria Queries
+
+When we query the minimum cost to buy a pizza at point $i$, we can split it into
+two cases:
+
+1. going downwards ($j <= i$): the cost would be $p_j-j+i$
+2. going upwards ($j > i$): the cost would be $p_j+j-i$
+
+Since $+i$ and $-i$ are constant, we can first calculate the best cost and then
+add $+i$ for the downwards cost and $-i$ for the upwards cost.
+
+Thus, if we keep two min segtrees (one for going downwards and one for going
+upwards), we can keep track of the minimum cost by setting each value in the
+downwards segtree to $p_j-j$ and each value in the upwards segtree to $p_j+j$.
+
+Read code for more clarity.
+
+### Subarray Sum Queries 
+
+Available on both links
+
+### Distinct Values Queries
+
+MUST Read : https://usaco.guide/problems/cses-1734-distinct-values-queries/solution
+
+Shows how you can convert the question into a dynamic RSQ -> once you identify that now you can use segment tree or BIT : Both approaches saved -> Read code for clarity
