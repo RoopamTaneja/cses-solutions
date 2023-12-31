@@ -196,3 +196,51 @@ Available on both links
 MUST Read : https://usaco.guide/problems/cses-1734-distinct-values-queries/solution
 
 Shows how you can convert the question into a dynamic RSQ -> once you identify that now you can use segment tree or BIT : Both approaches saved -> Read code for clarity
+
+### Increasing Array Queries
+
+MUST Read : 
+
+https://usaco.guide/problems/cses-2416-increasing-array-queries/solution?lang=cpp
+
+Get understanding of terms to be found and then read code COMMENTS
+
+Involves dynamic RSQ -> Fenwick or Segtree is needed
+
+## Lazy Propagation:  **Range Updates and Range Query**:
+
+Start by reading this
+
+https://codeforces.com/edu/course/2/lesson/5/1
+
+For associative and commutative operations, propagation is not needed. *e.g Addition*
+
+But for associative and non-commutative *e.g. Assignment*, propagation is needed (only to clear the path) => k/a Lazy prop
+
+For range sums, work normally, have another value in each node which stores sum of that segment. => $O(\log n)$
+
+Summarizing we get: for any queries (a modification or reading query) during the descent along the tree we should always push information from the current vertex into both of its children. We can understand this in such a way, that when we descent the tree we apply delayed modifications, but exactly as much as necessary (so not to degrade the complexity of  
+$O(\log n)$ ).
+
+This ensures that order of operations from vertex to root is maintained.
+
+Lazy updates ensure complexity of $O(\log n)$ which would have otherwise been $O(n)$ if all range elements were updated at the time of query itself.
+
+### Range Updates and Sums : 
+
+Read this and the code : https://usaco.guide/plat/RURQ?lang=cpp
+
+### Polynomial Queries :
+
+Hard Question
+
+Two lazy values for each node -> Constant value subtracted from each node, so sum added = len * x. And no of times you do the increment operation on [a, b].
+Increment operation : Increment v[a] by a, v[a+1] by a+1, v[b] by b and so on...
+so sum added = this range sum * y
+where this range sum = (b * (b + 1) / 2 - a * (a - 1) / 2)
+
+See code for better idea.
+
+### Range Queries and Copies
+
+PENDING

@@ -7,6 +7,7 @@ typedef vector<ll> vl;
 // 1D BIT Template
 // T.C : O((n+q)*lg n)
 vl fenwick;
+vl fenw_arr;
 ll sum_fenwick(ll k)
 {
     ll s = 0;
@@ -27,18 +28,24 @@ ll sum_fenwick(ll l, ll r)
 void add_fenwick(ll k, ll x)
 {
     ll n = fenwick.size() - 1;
+    fenw_arr[k] += x;
     while (k <= n)
     {
         fenwick[k] += x;
         k += (k & -k);
     }
 }
+void set_fenwick(ll k, ll x)
+{
+    add_fenwick(k, x - fenw_arr[k]);
+}
 void build_fenwick(vl v)
 {
     ll n = v.size();
     fenwick.resize(n + 1, 0);
+    fenw_arr.resize(n + 1, 0);
     for (ll i = 1; i <= n; i++)
-        add_fenwick(i, v[i - 1]);
+        set_fenwick(i, v[i - 1]);
 }
 
 void solve()
@@ -57,10 +64,7 @@ void solve()
     {
         cin >> x >> a >> b;
         if (x == 1)
-        {
-            add_fenwick(a, b - v[a - 1]);
-            v[a - 1] = b;
-        }
+            set_fenwick(a, b);
         else
             cout << sum_fenwick(a, b) << "\n";
     }

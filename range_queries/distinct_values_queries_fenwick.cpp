@@ -33,13 +33,6 @@ void add_fenwick(ll k, ll x)
         k += (k & -k);
     }
 }
-void build_fenwick(vl v)
-{
-    ll n = v.size();
-    fenwick.resize(n + 1, 0);
-    for (ll i = 1; i <= n; i++)
-        add_fenwick(i, v[i - 1]);
-}
 
 void solve()
 {
