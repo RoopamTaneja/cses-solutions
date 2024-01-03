@@ -4,6 +4,16 @@ Array does not change between queries
 
 ### RSQ - Range Sum Queries ; RMQ - Range Min/Max Queries
 
+### Offline vs Online : 
+
+Online : Each query is answered
+before receiving the next query
+
+Offline : The set of
+queries which can be processed in any order and all answers returned in the end
+
+Offline algos are generally easier to design compared to online algos.
+
 ## Static RSQ:
 Best - Prefix array
 
