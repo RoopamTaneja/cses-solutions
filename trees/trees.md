@@ -353,8 +353,6 @@ TC : O(n)
 - That is we need dynamic RSQ => Segtree can be used
 - See code for clarity. TC : O(n + q*lg n)
 
-<!-- ### Path Queries II -->
-
 ## LCA
 
 The lowest common ancestor of two nodes of a rooted tree is the lowest node
@@ -406,6 +404,58 @@ Finding LCA for given nodes. See code for clarity.
 Find LCA and dist = level[a] + level[b] - 2 * level[c]. 
 
 Two approaches saved for LCA. See code for clarity.
+
+### Counting Paths
+
+Read and understand difference array from here : https://codeforces.com/blog/entry/78762
+
+Any path between a->b must pass through their LCA. All ancestors of a from a -> LCA should get +1 and all ancestors of b from b -> LCA should get +1.
+
+But how to carry the updates to the ancestors??
+
+An idea similar to difference array technique. So we declare an array to hold the updates to be done. In the end we run a dfs where we add up values from children (kind of a prefix for my subtree). This will propagate the updates from our node to all ancestors *upto the root*.
+
+But we want them to only go till the LCA. Solution? See below:
+
+![](image-3.png)
+
+For every path a->b, nodes a and b get a +1. But their LCA would get a +2 so store a -1 there. Now still a +1 remains which must not be propagated to ancestors of LCA. So put a -1 in the parent of LCA (if it exists).
+
+Hence process all m paths for each and do a single DFS in the end. 
+
+See code for clarity. TC : O((n+m)* lg n)
+
+### Distinct Colors
+
+Combines ideas of Distinct Values Queries and Euler Tour
+
+Use Euler Tour to convert tree into an array, and transform subtree queries into range queries.
+
+Now the question reduces to finding number of distinct values in the array corresponding to different ranges of start[i] -> ending[i] - 1. Refer range_queries.md for that -> Use either segtree or fenwick tree.
+
+See code for clarity. TC : O(n *lg n)
+
+Alternative approach : Small-to-large merging: Can see if u wish https://usaco.guide/plat/merging?lang=cpp
+
+## Centroid
+
+- Node in a tree such that sizes of subtrees of all its children is atmost floor(n/2).
+- In a tree, either there is exactly one centroid, or exactly two centroids adjacent to each other.
+- A technique based on centroids is Centroid Decomposition of a tree. (*Advanced*)
+
+### Finding a Centroid
+
+We can find a centroid in a tree by starting at the root. Each step, loop
+through all of its children. If all of its children have subtree size less than
+or equal to 
+$\frac{N}{2}$
+, then it is a centroid. Otherwise, move to the child
+with a subtree size that is more than 
+$\frac{N}{2}$
+ and repeat until you find a
+centroid. => Pretty intuitive algorithm if you think about it.
+
+See code for clarity. TC : O(n)
 
 ## Successor / Functional Graphs:
 
