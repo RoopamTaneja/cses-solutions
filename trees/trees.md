@@ -99,6 +99,36 @@ No of subordinates is this count excluding the node itself, hence -1.
 
 **T.C : $O(n)$**
 
+### Tree Matching :
+
+DP on Trees:
+
+dp[v][0] = Maximum edges if v is not taken with an edge to its child
+
+dp[v][1] = Maximum edges if edge of v with its child is included
+
+If v is not included => any of its children are free to be included or excluded independently (we take what's better)
+
+If v with edge to child is included, the child with which it shares the edge can't be included with edge to its child, others are free. We need to make the edge with the child that offers the best combination
+
+dp[v][0] = sum(max(dp[u][0], dp[u][1])) where u belong to children of v
+
+dp[v][1] = max( 1 + dp[i][0] + sum(max(dp[j][0], dp[j][1]))-> summed over all j not equal to i )
+
+This simplifies to (for sake of single index) : 
+
+dp[v][1] = max(1 + dp[v][0] + dp[u][0] - max(dp[u][0], dp[u][1])) 
+
+dp[v][1] = 1 + dp[v][0] - min(max(dp[u][0], dp[u][1]) - dp[u][0])
+
+over all children u of v
+
+Base case : dp[leaf] = {0,0}
+
+See code for clarity. T.C : O(n)
+
+Greedy Strategy : https://usaco.guide/gold/dp-trees?lang=cpp
+
 ### CF - 1528A
 
 **Can See** : Nice hard question about identifying DP states and transition.
@@ -159,11 +189,74 @@ Nice hard question based on diameter DP approach, **look only if time**.
 
 Editorial : Adhish K DP on Trees playlist
 
-<!-- ## All Longest Paths - Tree Distances I
+## All Longest Paths - Tree Distances I
+
+Interestingly, you can take maximum of values for all nodes (or even just the leafs) and that will give you the tree diameter.
 
 ### Method-1 DP:
 
-### Method-2 BFS: -->
+**In-Out DP** aka **Rerooting**
+
+Longest distance = max(dist to node in own subtree *IN* , dist to node outside own subtree *OUT*)
+
+![](image.png)
+
+in[node] = 1 + max(in[children]); Base case : in[leaf] = 0
+
+out[node] = 1 + max(in[parent] (other than node), out[parent]); Base case : out[root] = 0
+
+Then ans[i] = max(in[i], out[i])
+
+How to take max of in[node] while excluding a particular child?
+
+Store two best values of in[node] during first dfs. If the current child's led to the best value, take the second best; otherwise take the best value.
+
+**IMP** : in[node] depends on in[children] => first dfs and compute for children then yourself. But out[node] depends on out[parent] => first compute for yourself then dfs and compute for children
+
+T.C : O(n)
+
+### Method-2 BFS:
+
+We need distance of farthest leaf from our node. The farthest leaf must be one of the ends of the diameter.
+
+(**Proof by contradiction** : Because if some third leaf is farther from our node then any of the ends => that third node can make a longer diameter, which is not possible)
+
+So we find the two ends of the diameter via BFS (like described earlier). We then find distance of every node from these ends via BFS.
+
+max_dist[i] = max(dist_from_a[i], dist_from_b[i])
+
+See code for clarity. T.C : O(n)
+
+## Tree Distances II
+
+**In-Out DP**
+
+DP is similar to Tree Distances I with two dfs calls
+
+Sum of paths = Sum of paths to nodes in own subtree + Sum of paths to nodes outside own subtree
+
+in[node]:
+
+![A way of imagining](image-1.png)
+
+A node extends path to all nodes in subtrees of its children by 1 (incl paths to the children which have current length = 0) => Sum of paths from them increases by their subtree size (incl the root bcoz you are initiating a new path to it)
+
+in[node] = sum(in[children]) + sum(sub[children]); Base case : in[leaf] = 0, sub[leaf] = 0
+
+![Keep imagining](image-2.png)
+
+Node extends all paths coming from its parent by 1 => this includes all paths in the tree except the node's own subtree.
+=> out[node] = coming_sum + (n - sub[node])
+
+coming_sum = in[parent] (except node) + out[parent] = in[parent] - (in[node] + sub[node]) + out[parent]
+
+Base case : out[root]=0
+
+and final ans[i] = in[i] + out[i]
+
+**Alternate DP soln** : https://usaco.guide/problems/cses-1133-tree-distances-ii/solution
+
+T.C : O(n)
 
 ## Binary Tree Points:
 
@@ -247,6 +340,21 @@ TC : O(n)
 - That is, we need Dynamic RSQ -> one possible way is segtree
 - See code for clarity. TC : O(n + q*lg n)
 
+### Path Queries
+
+- Interesting observation : Path from root to node s can be obtained from euler tour, by ignoring some branches.
+- Basically subtrees whose roots have *ended* when we first reach s need to be ignored
+- How to factor out a subtree in a traversal array? Modify the traversal array : 
+  - Assign a different start and end time to each node.
+  - Create a single array of size 2*n and assign val to start[i] and -val to ending[i]
+  - This helps in nullifying nodes which you want to ignore
+- Then sum of values from start[root], ie 0 to start[node] gives the sum of values in path from root to node => Range sum
+- And updates also happen at two points in the array -> start[node] and ending[node]
+- That is we need dynamic RSQ => Segtree can be used
+- See code for clarity. TC : O(n + q*lg n)
+
+<!-- ### Path Queries II -->
+
 ## LCA
 
 The lowest common ancestor of two nodes of a rooted tree is the lowest node
@@ -319,3 +427,7 @@ Binary Lifting - O (lg k) per query with O(n lg u) preprocessing where u is the 
 Computing succ(x, k). See code for clarity.
 
 Vectors give TLE. T.C : O((n+q)*log u), u = 1e9 here
+
+<!-- ### Planet Queries II
+
+### Planet Cycles -->

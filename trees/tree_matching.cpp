@@ -3,6 +3,8 @@
 using namespace std;
 typedef long long ll;
 typedef vector<ll> vl;
+#define mp make_pair
+typedef pair<ll, ll> pll;
 
 bool isLeaf(ll u, vl adj[])
 {
@@ -11,11 +13,11 @@ bool isLeaf(ll u, vl adj[])
     return false;
 }
 
-void dfs(ll s, ll e, vl adj[], vl &dp)
+void dfs(ll s, ll e, vl adj[], vector<pll> &dp)
 {
     if (isLeaf(s, adj))
     {
-        dp[s] = 0;
+        dp[s] = mp(0, 0);
         return;
     }
     for (auto u : adj[s])
@@ -24,18 +26,21 @@ void dfs(ll s, ll e, vl adj[], vl &dp)
             continue;
         dfs(u, s, adj, dp);
     }
+    ll val = 1e9;
     for (auto u : adj[s])
     {
         if (u == e)
             continue;
-        dp[s] = max(dp[s], dp[u] + 1);
+        ll term = max(dp[u].first, dp[u].second);
+        dp[s].first += term;
+        val = min(val, term - dp[u].first);
     }
+    dp[s].second = 1 + dp[s].first - val;
 }
 
 void solve()
 {
     ll n, a, b;
-    vl v;
     cin >> n;
     vl adj[n + 1];
     for (ll i = 2; i <= n; i++)
@@ -44,11 +49,9 @@ void solve()
         adj[a].emplace_back(b);
         adj[b].emplace_back(a);
     }
-    vl dp(n + 1, 0);
+    vector<pll> dp(n + 1, mp(0, 0));
     dfs(1, 0, adj, dp);
-    for (ll i = 1; i <= n; i++)
-        cout << dp[i] << " ";
-    cout << "\n";
+    cout << max(dp[1].first, dp[1].second) << "\n";
 }
 
 int main()
