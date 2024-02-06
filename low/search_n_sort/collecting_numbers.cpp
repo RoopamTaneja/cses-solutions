@@ -157,10 +157,29 @@ void solve()
     cout << s.size() << "\n";
 }
 
+void solve2()
+{
+    ll n, entry;
+    cin >> n;
+    vl ind(n+1, 0);
+    for (ll i = 1; i <= n; i++)
+    {
+        cin >> entry;
+        ind[entry] = i;
+    }
+    ll cnt = 1;
+    for (ll i = 1; i < n; i++)
+    {
+        if (ind[i] > ind[i + 1])
+            cnt++;
+    }
+    cout << cnt << "\n";
+}
+
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    solve();
+    solve2();
     return 0;
 }

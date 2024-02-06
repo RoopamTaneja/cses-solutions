@@ -35,58 +35,6 @@ bool comp(pair<int, int> p1, pair<int, int> p2)
     return false;
 }
 
-ll bin_mul(ll a, ll b, ll m)
-{
-    a %= m;
-    ll res = 0;
-    while (b > 0)
-    {
-        if (b & 1)
-            res = (res + a) % m;
-        a = (a + a) % m;
-        b >>= 1;
-    }
-    return res;
-}
-
-ll bin_exp_iter(ll a, ll b, ll m)
-{
-    a %= m;
-    ll res = 1;
-    while (b > 0)
-    {
-        if (b & 1)
-            res = (res * a) % m;
-        a = (a * a) % m;
-        b >>= 1;
-    }
-    return res;
-}
-
-ll pow_no_mod(ll a, ll b)
-{
-    ll res = 1;
-    while (b > 0)
-    {
-        if (b & 1)
-            res *= a;
-        a *= a;
-        b >>= 1;
-    }
-    return res;
-}
-
-ll floor_sqrt(ll x)
-{
-    ll ans = 0;
-    for (ll k = 1LL << 30; k != 0; k /= 2)
-    {
-        if ((ans + k) * (ans + k) <= x)
-            ans += k;
-    }
-    return ans;
-}
-
 void solve()
 {
     ll n, a, b;
