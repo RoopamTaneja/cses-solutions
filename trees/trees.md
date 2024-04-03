@@ -457,7 +457,7 @@ centroid. => Pretty intuitive algorithm if you think about it.
 
 See code for clarity. TC : O(n)
 
-## Successor / Functional Graphs:
+## Successor / Functional Graphs: Not Imp tbh
 
 Directed graphs with every node having **outdegree = exactly 1**
 
@@ -472,12 +472,22 @@ Naive - O(k) per query
 
 Binary Lifting - O (lg k) per query with O(n lg u) preprocessing where u is the maximum steps queried
 
-### Planet Queries I
+### Planet Queries I : Not Imp tbh
 
 Computing succ(x, k). See code for clarity.
 
 Vectors give TLE. T.C : O((n+q)*log u), u = 1e9 here
 
-<!-- ### Planet Queries II
+### Planet Queries II : Not Imp tbh
 
-### Planet Cycles -->
+Read : https://usaco.guide/problems/cses-1160-planets-queries-ii/solution
+
+Then read code and comments for clarity.
+
+TC : O((n+q) * lg n) (Remember : No of edges = No of vertices)
+
+### Planet Cycles : Not Imp tbh
+
+Read code and comments.
+
+TC : O(n) (Remember : No of edges = No of vertices)

@@ -7,14 +7,12 @@ typedef long long ll;
 typedef vector<ll> vl;
 typedef vector<vl> vvl;
 
-void dfs(ll node, vl adj[], vl &vis, vector<bool> &affected, bool &f)
+void dfs(ll node, vl adj[], vl &vis)
 {
     vis[node] = 1;
-    if (affected[node])
-        f = true;
     for (auto it : adj[node])
         if (!vis[it])
-            dfs(it, adj, vis, affected, f);
+            dfs(it, adj, vis);
 }
 
 void bellman_ford(ll V, vvl &edges, ll S)
@@ -33,25 +31,38 @@ void bellman_ford(ll V, vvl &edges, ll S)
         }
     }
     vector<bool> affected(V + 1, 0);
+    bool none = true;
     for (auto it : edges)
     {
         int u = it[0];
         int v = it[1];
         int wt = it[2];
         if (dist[u] != 1e18 && dist[u] + wt < dist[v])
+        {
             affected[u] = 1;
+            none = false;
+        }
+    }
+    if (none)
+    {
+        cout << -dist[V] << "\n";
+        return;
     }
     vl vis(V + 1, 0);
     vl adjRev[V + 1];
     for (auto it : edges)
         adjRev[it[1]].eb(it[0]);
 
-    bool f = false;
-    dfs(V, adjRev, vis, affected, f);
-    if (f)
-        cout << -1 << "\n";
-    else
-        cout << -dist[V] << "\n";
+    dfs(V, adjRev, vis);
+    for (ll i = 1; i <= V; i++)
+    {
+        if (affected[i] && vis[i])
+        {
+            cout << -1 << "\n";
+            return;
+        }
+    }
+    cout << -dist[V] << "\n";
 }
 
 void solve()

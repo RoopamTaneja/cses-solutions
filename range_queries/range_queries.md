@@ -157,7 +157,7 @@ $1 + 2 + 4 + \dots + 2^{\lceil\log_2 n\rceil} \lt 2^{\lceil\log_2 n\rceil + 1} \
 ## Range Update + Point Query
 
 - Same segtree code as that of RSQ
-- Define diff array : diff[i] = v[i] - v[i-1] for i>0 and diff[0] = diff[0] and build segtree using it
+- Define diff array : diff[i] = v[i] - v[i-1] for i>0 and diff[0] = v[0] and build segtree using it
 - Range update is same as : 2 (or 1) point updates : increase [a, b] by u is same as increasing diff[a] by u and decreasing diff[b+1] by u (iff b+1 < n) (0-based)
 - Point Query is same as range query for [0, k] (0-based) since : v[i] = prefix sum of diff array till index k.
 

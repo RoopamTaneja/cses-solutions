@@ -53,25 +53,24 @@ vl topoSort(ll V, vl adj[])
     }
     return ans;
 }
-vl adj[100001], adjRev[100001]; // global necessary to avoid runtime error
 
 void solve()
 {
     ll n, a, b, m;
     cin >> n >> m;
+    vl adj[n + 1];
     for (ll i = 0; i < m; i++)
     {
         cin >> a >> b;
         adj[a].eb(b);
-        adjRev[b].eb(a);
     }
     vl order = topoSort(n, adj);
     vl dp(n + 1, 0);
     dp[1] = 1;
     for (auto &b : order)
     {
-        for (auto &a : adjRev[b])
-            dp[b] = (dp[b] + dp[a]) % MOD;
+        for (auto &a : adj[b])
+            dp[a] = (dp[b] + dp[a]) % MOD;
     }
     cout << dp[n] << "\n";
 }
