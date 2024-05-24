@@ -15,34 +15,29 @@ the borders of ABACABA are A, ABA and ABACABA.
 
 ## String Hashing
 
-The goal of it is to convert a string into an integer, the so-called hash of the string. The following condition has to hold: if two strings $s$  and  
-$t$ are equal ($s = t$), then also their hashes have to be equal ( 
+The goal of it is to convert a string into an integer, the so-called hash of the string. The following condition has to hold: if two strings $s$  and  
+$t$ are equal ($s = t$), then also their hashes have to be equal ( 
 $\text{hash}(s) = \text{hash}(t)$). Otherwise, we will not be able to compare strings.
 
 So to compare two strings , we compare their hashes. If unequal hashes => unequal strings else equal hashes => most likely equal strings.
 
-Usually we want the hash function to map strings onto numbers of a fixed range  
-$[0, m)$ , then comparing strings is just a comparison of two integers with a fixed length. And of course, we want  
-$\text{hash}(s) \neq \text{hash}(t)$  to be very likely if  
-$s \neq t$ .
+Usually we want the hash function to map strings onto numbers of a fixed range  
+$[0, m)$ , then comparing strings is just a comparison of two integers with a fixed length. And of course, we want $\text{hash}(s) \neq \text{hash}(t)$  to be very likely if $s \neq t$ .
 
 Using hashing will not be 100% deterministically correct, because two complete different strings might have the same hash. However, in a wide majority of tasks, this can be safely ignored as the probability of the hashes of two different strings colliding is still very small.
 
-The good and widely used way to define the hash of a string  
-$s$  of length  
-$n$  is **polynomial rolling hash function**
- 
-$$\begin{align} \text{hash}(s) &= \sum_{i=0}^{n-1} s[i] \cdot p^i \mod m,\end{align}$$ 
- or 
-$$\begin{align} \text{hash}(s) &= \sum_{i=0}^{n-1} s[i] \cdot p^{n-1-i} \mod m \end{align}$$ 
-where  
-$p$  and  
-$m$  are some chosen, positive numbers.
+The good and widely used way to define the hash of a string $s$  of length $n$  is **polynomial rolling hash function**
+ 
+$$\begin{align} \text{hash}(s) &= \sum_{i=0}^{n-1} s[i] \cdot p^i \mod m,\end{align}$$ 
 
-It is reasonable to make  
-$p$  a prime number roughly equal to the number of characters in the input alphabet. For example, if the input is composed of only lowercase letters of the English alphabet,  
-$p = 31$  is a good choice. If the input may contain both uppercase and lowercase letters, then  
-$p = 53$  is a possible choice.
+ or 
+
+$$\begin{align} \text{hash}(s) &= \sum_{i=0}^{n-1} s[i] \cdot p^{n-1-i} \mod m \end{align}$$ 
+
+where $p$ and $m$  are some chosen, positive numbers.
+
+It is reasonable to make $p$  a prime number roughly equal to the number of characters in the input alphabet. For example, if the input is composed of only lowercase letters of the English alphabet,  
+$p = 31$  is a good choice. If the input may contain both uppercase and lowercase letters, then $p = 53$  is a possible choice.
 
 $m$ should be a large prime. eg 1e9 + 9
 
@@ -69,7 +64,9 @@ class HashedString {
 
   public:
 	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) { pow.push_back((pow.back() * B) % M); }
+		while (pow.size() < s.size()) { 
+            pow.push_back((pow.back() * B) % M); 
+        }
 
 		p_hash[0] = 0;
 		for (int i = 0; i < s.size(); i++) {
@@ -180,9 +177,9 @@ A trie is a rooted tree that maintains a set of strings. Each string in the set
 is stored as a chain of characters that starts at the root. If two strings have a
 common prefix, they also have a common chain in the tree.
 
-We will denote the total length of constituent strings by  
-$m$  and the size of the alphabet by  
-$k$ . 
+We will denote the total length of constituent strings by  
+$m$  and the size of the alphabet by  
+$k$ . 
 
 Basic trie implementation for template : 
 
@@ -231,29 +228,28 @@ bool search_string(string const &s)
 ```
 
 
-Here, we store the trie as an array of trie_node. Each node contains a flag and the edges in the form of an array  
-$\text{next}[]$ , where  
-$\text{next}[i]$  is the index of the vertex that we reach by following the character  
-$i$ , or  
-$-1$  if there is no such edge. Initially, the trie consists of only one vertex - the root - with the index  
-$0$ .
+Here, we store the trie as an array of trie_node. Each node contains a flag and the edges in the form of an array  
+$\text{next}[]$ , where  
+$\text{next}[i]$  is the index of the vertex that we reach by following the character  
+$i$ , or $-1$ if there is no such edge. Initially, the trie consists of only one vertex - the root - with the index $0$.
 
 Space : O(mk)
 
 Insertion or searching TC : O(n) -> n is length of particular key
 
+**Complete bit trie and example qs on max XOR : bit_trie.cpp**
+
 ### Aho Corasick Algorithm
 
-**Main use : Get all occurences of a set of patterns in a given text. in linear time.**
+**Main use : Get all occurences of a set of patterns in a given text in linear time.**
 
 The algorithm constructs a finite state automaton based on a trie in and then uses it to process the text.
 
-I won't describe the algorithm but it constructs a trie on set of patterns and adds suffix and output links in   
-$O(mk)$ time as preprocessing and matches with text of length n in $O(n)$ time. 
+I won't describe the algorithm but it constructs a trie on set of patterns and adds suffix and output links in $O(mk)$ time as preprocessing and matches with text of length n in $O(n)$ time. 
 
-**Suffix link** :  For a vertex  
-$p$  is an edge that points to the longest proper suffix of the string corresponding to the vertex  
-$p$ . 
+**Suffix link** :  Suffix link for a vertex  
+$p$  is an edge that points to the longest proper suffix of the string corresponding to the vertex  
+$p$ . 
 
 **Output link** : A suffix link pointing to a pattern in the set.
 
@@ -261,3 +257,25 @@ You can call KMP to be a special case of ACA with a single pattern.
 
 If **really** interested : https://cp-algorithms.com/string/aho_corasick.html
 
+### NOTE
+
+Always target a question using :
+
+- KMP
+- Trie
+- Aho Corasick (last resort)
+
+Others shouldn't be needed.
+
+---
+
+### No of palindromic subsequences
+
+![](subseq1.jpg)
+![](subseq2.jpg)
+![](subseq3.jpg)
+
+### No of palindromic substrings
+
+![](substr1.jpg)
+![](substr2.jpg)
