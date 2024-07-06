@@ -3,6 +3,9 @@ using namespace std;
 typedef long long ll;
 typedef vector<ll> vl;
 
+// Two methods, one via KMP array other via Z-array
+// TC : O(n)
+
 vl prefix_function(string s)
 {
     ll n = s.length();
@@ -64,7 +67,7 @@ void solve2()
     vl ans;
     for (ll i = 0; i < n; i++)
     {
-        if (i + z[i] >= n)
+        if (i + z[i] == n)
             ans.emplace_back(i);
     }
     ans.emplace_back(n);
@@ -75,6 +78,6 @@ void solve2()
 
 int main()
 {
-    solve();
+    solve2();
     return 0;
 }

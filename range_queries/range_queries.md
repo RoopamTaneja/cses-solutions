@@ -113,6 +113,9 @@ E.g. $sum_q(1,7)$ = $sum_q(1,4)$ + $sum_q(5,6)$ + $sum_q(7,7)$
 - For sum (1, k), we take current interval sum and use knowledge of interval length to jump to previous intervals accumulating their sums until we reach beginning of array.
   
 - The interval to the left of any interval is at least double in size -> O(lg n)
+
+**Application : counting_inversions_fenwick.cpp, fenwick_tree_dynamic_rsq.cpp**
+
 # Segment Tree
 
 - A 
@@ -140,7 +143,7 @@ In this case, all the elements in this subtree are in the area in which we need 
 
 - In addition to the sum and the minimum, associative operations which can be used for segtree are:
   - multiplication (including modulo multiplication, matrix multiplication, etc.),
-  - bitwise operations: &, |, ^,
+  - bitwise operations: &, |, ^
   - GCD - though gcd calc is not O(1)
 - *With more analysis, you can also use segtree for some non-trivial operations, by modifying 1-value in any node & 2-merge operation for merging two children depending on the value.*
 - One important property of Segment Trees is that they require only a linear amount of memory. The standard Segment Tree requires  
