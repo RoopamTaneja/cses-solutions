@@ -1,4 +1,3 @@
-#pragma GCC optimize("O3,unroll-loops")
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -8,27 +7,16 @@ vvl children;
 vl parent;
 vvl ances;
 vl level;
-vl val;
 
-void treeinit(ll n)
+void dfs_init(ll node)
 {
-    ll k = log2(n) + 1;
-    children.assign(n + 1, vl(0));
-    parent.assign(n + 1, -1);
-    ances.assign(n + 1, vl(k, -1));
-    level.assign(n + 1, 0);
-    val.assign(n + 1, 0);
-}
-
-void Traversal(ll node)
-{
-    for (auto x : children[node])
+    for (auto &x : children[node])
     {
         if (x == parent[node])
             continue;
         parent[x] = node;
         level[x] = level[node] + 1;
-        Traversal(x);
+        dfs_init(x);
     }
 }
 
@@ -90,10 +78,7 @@ bool isLeaf(ll u, vvl &adj)
 void dfs(ll s, ll e, vvl &adj, vl &dp)
 {
     if (isLeaf(s, adj))
-    {
-        dp[s] = val[s];
         return;
-    }
     for (auto u : adj[s])
     {
         if (u == e)
@@ -106,32 +91,35 @@ void dfs(ll s, ll e, vvl &adj, vl &dp)
             continue;
         dp[s] += dp[u];
     }
-    dp[s] += val[s];
 }
 
 void solve()
 {
     ll n, m, a, b;
     cin >> n >> m;
-    treeinit(n);
-    for (ll i = 2; i <= n; i++)
+    ll k = log2(n) + 1;
+    children.assign(n + 1, vl(0));
+    parent.assign(n + 1, -1);
+    ances.assign(n + 1, vl(k, -1));
+    level.assign(n + 1, 0);
+    for (ll i = 0; i < n - 1; i++)
     {
         cin >> a >> b;
         children[a].emplace_back(b);
         children[b].emplace_back(a);
     }
-    Traversal(1);
+    dfs_init(1);
     buildances(n);
+    vl dp(n + 1, 0);
     for (ll i = 0; i < m; i++)
     {
         cin >> a >> b;
         ll c = lca(a, b);
-        val[a]++, val[b]++;
-        val[c]--;
+        dp[a]++, dp[b]++;
+        dp[c]--;
         if (parent[c] != -1)
-            val[parent[c]]--;
+            dp[parent[c]]--;
     }
-    vl dp(n + 1);
     dfs(1, 0, children, dp);
     for (ll i = 1; i <= n; i++)
         cout << dp[i] << " ";

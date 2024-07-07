@@ -183,6 +183,8 @@ of the tree is the distance between b and c.
 
 T.C : O(n)
 
+*Weighted tree diameter also saved separately.*
+
 ### CF - 1083A
 
 Nice hard question based on diameter DP approach, **look only if time**.
