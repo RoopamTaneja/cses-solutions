@@ -15,14 +15,11 @@ the borders of ABACABA are A, ABA and ABACABA.
 
 ## String Hashing
 
-The goal of it is to convert a string into an integer, the so-called hash of the string. The following condition has to hold: if two strings $s$  and  
-$t$ are equal ($s = t$), then also their hashes have to be equal ( 
-$\text{hash}(s) = \text{hash}(t)$). Otherwise, we will not be able to compare strings.
+The goal of it is to convert a string into an integer, the so-called hash of the string. The following condition has to hold: if two strings $s$ and $t$ are equal ($s = t$), then also their hashes have to be equal ($\text{hash}(s) = \text{hash}(t)$). Otherwise, we will not be able to compare strings.
 
 So to compare two strings , we compare their hashes. If unequal hashes => unequal strings else equal hashes => most likely equal strings.
 
-Usually we want the hash function to map strings onto numbers of a fixed range  
-$[0, m)$ , then comparing strings is just a comparison of two integers with a fixed length. And of course, we want $\text{hash}(s) \neq \text{hash}(t)$  to be very likely if $s \neq t$ .
+Usually we want the hash function to map strings onto numbers of a fixed range $[0, m)$ , then comparing strings is just a comparison of two integers with a fixed length. And of course, we want $\text{hash}(s) \neq \text{hash}(t)$  to be very likely if $s \neq t$ .
 
 Using hashing will not be 100% deterministically correct, because two complete different strings might have the same hash. However, in a wide majority of tasks, this can be safely ignored as the probability of the hashes of two different strings colliding is still very small.
 
@@ -36,71 +33,40 @@ $$\begin{align} \text{hash}(s) &= \sum_{i=0}^{n-1} s[i] \cdot p^{n-1-i} \mod m \
 
 where $p$ and $m$  are some chosen, positive numbers.
 
-It is reasonable to make $p$  a prime number roughly equal to the number of characters in the input alphabet. For example, if the input is composed of only lowercase letters of the English alphabet,  
-$p = 31$  is a good choice. If the input may contain both uppercase and lowercase letters, then $p = 53$  is a possible choice.
+It is reasonable to make $p$  a prime number roughly equal to the number of characters in the input alphabet. For example, if the input is composed of only lowercase letters of the English alphabet, $p = 31$ is a good choice. If the input may contain both uppercase and lowercase letters, then $p = 53$  is a possible choice.
 
 $m$ should be a large prime. eg 1e9 + 9
 
 Value for each character can be taken : 1 - 26 way or ASCII values or any other way.
 
+**For second type of rolling hash function** :
+
+Explanation :
+
 ![](image.png)
 
-(For second type of rolling hash function)
+Implementation :
 
-**Implementation**
-
-```cpp
-class HashedString {
-  private:
-	// change M and B if you want
-	static const long long M = 1e9 + 9;
-	static const long long B = 9973;
-
-	// pow[i] contains B^i % M
-	static vector<long long> pow;
-
-	// p_hash[i] is the hash of the first i characters of the given string
-	vector<long long> p_hash;
-
-  public:
-	HashedString(const string &s) : p_hash(s.size() + 1) {
-		while (pow.size() < s.size()) { 
-            pow.push_back((pow.back() * B) % M); 
-        }
-
-		p_hash[0] = 0;
-		for (int i = 0; i < s.size(); i++) {
-			p_hash[i + 1] = ((p_hash[i] * B) % M + s[i]) % M;
-		}
-	}
-
-	long long get_hash(int start, int end) {
-		long long raw_val =
-		    (p_hash[end + 1] - (p_hash[start] * pow[end - start + 1]));
-		return (raw_val % M + M) % M;
-	}
-};
-vector<long long> HashedString::pow = {1};
-```
+`string_hashing.cpp`
 
 This implementation calculates
 
-$$\texttt{hsh}[i + 1] = \left(\sum_{x = 0}^i B^{i - x} \cdot S[x]\right) \bmod M$$
+$$\texttt{hsh}[i + 1] = \left(\sum_{x = 0}^i p^{i - x} \cdot S[x]\right) \bmod m$$
 
 The hash of any particular substring $S[a : b]$ is then calculated as
 
-$$\left(\sum_{x = a}^b B^{b - x} \cdot S[x] \right) \bmod M = (\texttt{hsh}[b + 1] - \texttt{hsh}[a] \cdot B^{b - a + 1}) \bmod M$$
+$$\left(\sum_{x = a}^b p^{b - x} \cdot S[x] \right) \bmod m = (\texttt{hsh}[b + 1] - \texttt{hsh}[a] \cdot p^{b - a + 1}) \bmod m$$
 
-using prefix sums. This is nice because the highest power of $B$ in that
-polynomial will always be $B^{b - a}$.
+using prefix sums. This is nice because the highest power of $p$ in that
+polynomial will always be $p^{b - a}$. (Just reiterating what was in the image)
 
-In C++, a virtually unhackable way of generating $B$ in the implementation
+In C++, a virtually unhackable way of generating $p$ in the implementation
 above is to use a random number generator seeded with a high-precision clock,
 as described here.
 
 ```cpp
 mt19937 rng((uint32_t)chrono::steady_clock::now().time_since_epoch().count());
-const ll B = uniform_int_distribution<ll>(0, M - 1)(rng);
+const ll p = uniform_int_distribution<ll>(0, m - 1)(rng);
 ```
 
 ## Rabin Karp
@@ -169,7 +135,7 @@ vl find_matches(string pat, string text)
 
 TC : O(n+m) ; SC : O(n+m)
 
-*See more applications here if time.*
+*See more applications here if time. : https://cp-algorithms.com/string/prefix-function.html*
 
 ## Tries + Aho Corasick 
 
@@ -177,9 +143,7 @@ A trie is a rooted tree that maintains a set of strings. Each string in the set
 is stored as a chain of characters that starts at the root. If two strings have a
 common prefix, they also have a common chain in the tree.
 
-We will denote the total length of constituent strings by  
-$m$  and the size of the alphabet by  
-$k$ . 
+We will denote the total length of constituent strings by $m$  and the size of the alphabet by $k$ . 
 
 Basic trie implementation for template : 
 
@@ -228,10 +192,7 @@ bool search_string(string const &s)
 ```
 
 
-Here, we store the trie as an array of trie_node. Each node contains a flag and the edges in the form of an array  
-$\text{next}[]$ , where  
-$\text{next}[i]$  is the index of the vertex that we reach by following the character  
-$i$ , or $-1$ if there is no such edge. Initially, the trie consists of only one vertex - the root - with the index $0$.
+Here, we store the trie as an array of trie_node. Each node contains a flag and the edges in the form of an array $\text{next}[]$ , where $\text{next}[i]$  is the index of the vertex that we reach by following the character $i$, or $-1$ if there is no such edge. Initially, the trie consists of only one vertex - the root - with the index $0$.
 
 Space : O(mk)
 
@@ -247,9 +208,7 @@ The algorithm constructs a finite state automaton based on a trie in and then us
 
 I won't describe the algorithm but it constructs a trie on set of patterns and adds suffix and output links in $O(mk)$ time as preprocessing and matches with text of length n in $O(n)$ time. 
 
-**Suffix link** :  Suffix link for a vertex  
-$p$  is an edge that points to the longest proper suffix of the string corresponding to the vertex  
-$p$ . 
+**Suffix link** :  Suffix link for a vertex $p$ is an edge that points to the longest proper suffix of the string corresponding to the vertex $p$ . 
 
 **Output link** : A suffix link pointing to a pattern in the set.
 
@@ -261,6 +220,7 @@ If **really** interested : https://cp-algorithms.com/string/aho_corasick.html
 
 Always target a question using :
 
+- Hashing
 - KMP
 - Trie
 - Aho Corasick (last resort)
@@ -271,11 +231,11 @@ Others shouldn't be needed.
 
 ### No of palindromic subsequences
 
-![](subseq1.jpg)
-![](subseq2.jpg)
-![](subseq3.jpg)
+- ![](subseq1.jpg)
+- ![](subseq2.jpg)
+- ![](subseq3.jpg)
 
 ### No of palindromic substrings
 
-![](substr1.jpg)
-![](substr2.jpg)
+- ![](substr1.jpg)
+- ![](substr2.jpg)
