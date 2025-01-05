@@ -16,6 +16,12 @@ for (ll i = 0; i < n; i++)
 //     v[i] = m[v[i]];
 ```
 
+## CSES Maths Initial Qs Notes
+
+![](img/image3.jpg)
+
+![](img/image4.jpg)
+
 ## Maths - Fibonacci Numbers :
 
 ![](img/image.png)
@@ -151,6 +157,35 @@ Total no of paths of length k -> Sum over all values of A^k[i][j].
 So just do mat_exp of adjacency matrix A to power k.
 
 See AC CSES submission if any doubt.
+
+## Maths - Graph Paths II :
+
+A directed, weighted graph with n vertices and m edges and we are given an integer k. For each pair of vertices (i, j) we have to find the weight of shortest path of k edges between these vertices.
+
+G is adj matrix such that G[i][j] = wt of edge if exists else +inf.
+
+We can build the solution to the problem iteratively:
+
+Let us denote $L_k$ the matrix for $k$ and $L_{k+1}$ the matrix we want to build.
+Then the following holds:
+
+$$L_{k+1}[i][j] = \min_{p = 1 \ldots n} \left(L_k[i][p] + G[p][j]\right)$$
+
+When looking closer at this formula, we can draw an analogy with the matrix multiplication:
+
+$$L_{k+1} = L_k \odot G,$$
+
+where the operation $\odot$ is defined as follows:
+
+$$A \odot B = C~~\Longleftrightarrow~~C_{i j} = \min_{p = 1 \ldots n}\left(A_{i p} + B_{p j}\right)$$
+
+Thus the solution of the task can be represented using the modified multiplication:
+
+$$L_k = \underbrace{G \odot \ldots \odot G}_{k~\text{times}} = G^{\odot k}$$
+
+Because the modified multiplication is obviously associative, so this solution has $O(n^3 \log k)$ complexity.
+
+See `math/graph_paths_ii.cpp` if any doubt.
 
 ## DP - Counting Numbers
 
