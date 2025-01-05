@@ -27,7 +27,7 @@ void solve()
     for (ll i = 1; i <= n; i++)
     {
         dp[i] = dp[i - 1];
-        ll j = distance(e.begin(), lower_bound(e.begin(), e.end(), proj[i].s)) - 1;
+        ll j = lower_bound(e.begin(), e.end(), proj[i].s) - e.begin() -1;
         dp[i] = max(proj[i].p + dp[j], dp[i]);
     }
     cout << dp[n] << "\n";

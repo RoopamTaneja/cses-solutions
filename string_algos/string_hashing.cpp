@@ -55,8 +55,8 @@ void init(string &s, vl &pw, vl &pref)
 }
 
 ll get_hash(ll i, ll j, vl &pw, vl &pref) // returns hash of s[i..j]
-{                                          // i and j 0-indexed
-    ll val = pref[j + 1] - (pref[i] * p[j - i + 1]) % m;
+{                                         // i and j 0-indexed
+    ll val = pref[j + 1] - (pref[i] * pw[j - i + 1]) % m;
     return (val + m) % m;
 }
 

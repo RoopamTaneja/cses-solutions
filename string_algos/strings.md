@@ -222,6 +222,7 @@ Always target a question using :
 
 - Hashing
 - KMP
+- Manacher
 - Trie
 - Aho Corasick (last resort)
 
@@ -239,3 +240,13 @@ Others shouldn't be needed.
 
 - ![](substr1.jpg)
 - ![](substr2.jpg)
+
+## Manacher
+
+Read here : https://cp-algorithms.com/string/manacher.html
+
+Impl : `manacher.cpp`
+
+TC : O(n)
+
+---

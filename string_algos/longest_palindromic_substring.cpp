@@ -1,7 +1,9 @@
 // See no_of_palindromic_substrings.cpp first
 // TC : O(n^2)
 // SC : O(n^2)
-// Faster (Manacher's) algorithms exist
+
+// Faster : 
+// Manacher's : TC and SC both O(n) -> See manacher.cpp
 
 // Just compute dp table to find which substrings are palindromes
 // and return the longest among those

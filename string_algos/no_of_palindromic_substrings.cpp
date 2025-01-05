@@ -2,7 +2,7 @@
 // incl repeated substrings
 // TC : O(n^2)
 // SC : O(n^2)
-// Faster algorithms may exist
+// Faster algorithm -> manacher.cpp
 
 #include <bits/stdc++.h>
 using namespace std;
